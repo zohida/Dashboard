@@ -1,46 +1,40 @@
-const API_URL = "https://backend-7-ytbh.onrender.com";
+const API_URL = "https://backend-7-ytbh.onrender.com/api/auth";
 
-// Tokenni olish
-function getAuthToken() {
-  return localStorage.getItem("authToken");
-}
-
-// Token amal qilish muddati tugaganligini tekshirish
-function isTokenExpired(token) {
-  const payload = JSON.parse(atob(token.split(".")[1]));
-  const currentTime = Math.floor(Date.now() / 1000);
-  return payload.exp < currentTime;
-}
-
-// Tokenni har safar ishlatishdan oldin tekshirish
-function validateAuthToken() {
-  const token = getAuthToken();
-  if (token && isTokenExpired(token.split(" ")[1])) {
-    console.log("Token expired, please log in again.");
-    localStorage.removeItem("authToken");
-    alert("Session expired. Please log in again.");
-    window.location.href = "/login.html"; // Login sahifasiga yo'naltirish
-  }
-}
-
-// Login qilish va tokenni saqlash
-async function login(username, password) {
+async function login(email, password) {
   try {
-    const response = await fetch(`${API_URL}/api/auth/login`, {
+    const response = await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     });
 
-    if (!response.ok) throw new Error("Login failed");
-
     const data = await response.json();
-    const authToken = `Bearer ${data.token}`;
-    localStorage.setItem("authToken", authToken);
-    console.log("Token saved:", authToken);
+
+    // Javob va tokenni tekshirish
+    console.log("Response Data:", data);
+
+    if (response.ok && data.token) {
+      const authToken = `Bearer ${data.token}`;
+      localStorage.setItem("authToken", authToken);
+      console.log("Stored Token:", authToken);
+
+      alert("Login successful!");
+
+      // Asosiy sahifaga yo'naltirish
+      window.location.href = "./index.html";
+    } else {
+      alert(data.message || "Login failed!");
+    }
   } catch (error) {
-    console.error("Login error:", error.message);
+    console.error("Login Error:", error.message);
+    alert("An error occurred during login.");
   }
 }
 
-export { API_URL, getAuthToken, validateAuthToken, login };
+// Login formni boshqarish
+document.getElementById("loginForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  login(email, password);
+});

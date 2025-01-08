@@ -1,23 +1,22 @@
-const API_URL = "https://backend-7-ytbh.onrender.com"; // Backend URL
-const authToken = localStorage.getItem("authToken"); // Tokenni localStorage'dan olish
+const API_URL = "https://backend-7-ytbh.onrender.com/api/categories";
+const authToken = localStorage.getItem("authToken");
 
+// Token mavjudligini tekshirish
 if (!authToken) {
-  alert("Token not found. Please log in.");
+  alert("Please log in to access the dashboard.");
   window.location.href = "/login.html";
 }
 
 // Kategoriyalarni olish
 async function fetchCategories() {
   try {
-    const response = await fetch(`${API_URL}/api/categories`, {
-      headers: {
-        Authorization: authToken,
-      },
+    const response = await fetch(API_URL, {
+      headers: { Authorization: authToken },
     });
 
     if (!response.ok) throw new Error("Failed to fetch categories");
 
-    const { categories } = await response.json();
+    const categories = await response.json();
     renderCategories(categories);
   } catch (error) {
     console.error("Error fetching categories:", error.message);
@@ -46,7 +45,7 @@ function renderCategories(categories) {
 // Kategoriya qo'shish
 async function addCategory(name) {
   try {
-    const response = await fetch(`${API_URL}/api/categories`, {
+    const response = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,7 +73,7 @@ async function editCategory(categoryId) {
   }
 
   try {
-    const response = await fetch(`${API_URL}/api/categories/${categoryId}`, {
+    const response = await fetch(`${API_URL}/${categoryId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -98,11 +97,9 @@ async function deleteCategory(categoryId) {
   if (!confirmDelete) return;
 
   try {
-    const response = await fetch(`${API_URL}/api/categories/${categoryId}`, {
+    const response = await fetch(`${API_URL}/${categoryId}`, {
       method: "DELETE",
-      headers: {
-        Authorization: authToken,
-      },
+      headers: { Authorization: authToken },
     });
 
     if (!response.ok) throw new Error("Failed to delete category");

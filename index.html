@@ -14,6 +14,7 @@
         <li><a href="./products.html">Products</a></li>
         <li><a href="./categories.html">Categories</a></li>
         <li><a href="./users.html">Users</a></li>
+        <li><button id="logoutButton">Logout</button></li>
       </ul>
     </nav>
   </header>
@@ -23,3 +24,12 @@
       <p>Use the navigation menu to manage products, categories, and users.</p>
     </section>
   </main>
+  <script>
+    document.getElementById("logoutButton").addEventListener("click", () => {
+      localStorage.removeItem("authToken");
+      alert("You have been logged out.");
+      window.location.href = "/login.html";
+    });
+  </script>
+</body>
+</html>
