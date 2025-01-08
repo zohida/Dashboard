@@ -11,19 +11,22 @@ if (!authToken) {
 async function fetchCategories() {
   try {
     const response = await fetch(API_URL, {
+      method: "GET",
       headers: { Authorization: authToken },
     });
 
-    if (!response.ok) throw new Error("Failed to fetch categories");
+    if (!response.ok) throw new Error(`Failed to fetch categories: ${response.statusText}`);
 
     const categories = await response.json();
+    console.log("Categories Data:", categories); // Kategoriyalarni kuzatish
     renderCategories(categories);
   } catch (error) {
     console.error("Error fetching categories:", error.message);
+    alert("Failed to fetch categories.");
   }
 }
 
-// Kategoriyalarni ko'rsatish
+// Kategoriyalarni jadvalda ko‘rsatish
 function renderCategories(categories) {
   const table = document.getElementById("categoryTable").querySelector("tbody");
   table.innerHTML = "";
@@ -42,7 +45,7 @@ function renderCategories(categories) {
   });
 }
 
-// Kategoriya qo'shish
+// Kategoriya qo‘shish
 async function addCategory(name) {
   try {
     const response = await fetch(API_URL, {
@@ -54,22 +57,20 @@ async function addCategory(name) {
       body: JSON.stringify({ name }),
     });
 
-    if (!response.ok) throw new Error("Failed to add category");
+    if (!response.ok) throw new Error(`Failed to add category: ${response.statusText}`);
 
     alert("Category added successfully!");
     fetchCategories();
   } catch (error) {
     console.error("Error adding category:", error.message);
+    alert("Failed to add category.");
   }
 }
 
 // Kategoriya tahrirlash
 async function editCategory(categoryId) {
   const newName = prompt("Enter new category name:");
-  if (!newName) {
-    alert("Category name is required.");
-    return;
-  }
+  if (!newName) return;
 
   try {
     const response = await fetch(`${API_URL}/${categoryId}`, {
@@ -81,16 +82,17 @@ async function editCategory(categoryId) {
       body: JSON.stringify({ name: newName }),
     });
 
-    if (!response.ok) throw new Error("Failed to update category");
+    if (!response.ok) throw new Error(`Failed to update category: ${response.statusText}`);
 
     alert("Category updated successfully!");
     fetchCategories();
   } catch (error) {
     console.error("Error updating category:", error.message);
+    alert("Failed to update category.");
   }
 }
 
-// Kategoriya o'chirish
+// Kategoriya o‘chirish
 async function deleteCategory(categoryId) {
   const confirmDelete = confirm("Are you sure you want to delete this category?");
   if (!confirmDelete) return;
@@ -101,14 +103,15 @@ async function deleteCategory(categoryId) {
       headers: { Authorization: authToken },
     });
 
-    if (!response.ok) throw new Error("Failed to delete category");
+    if (!response.ok) throw new Error(`Failed to delete category: ${response.statusText}`);
 
     alert("Category deleted successfully!");
     fetchCategories();
   } catch (error) {
     console.error("Error deleting category:", error.message);
+    alert("Failed to delete category.");
   }
 }
 
-// "Add Category" tugmasiga hodisa qo'shish
-document.get
+// Kategoriyalarni yuklash
+fetchCategories();
