@@ -1,9 +1,9 @@
 const API_URL = "https://backend-7-ytbh.onrender.com/api/categories";
 const authToken = localStorage.getItem("authToken");
 
-// Token mavjudligini tekshirish
+// Tokenni tekshirish
 if (!authToken) {
-  alert("Please log in to access the dashboard.");
+  alert("Please log in.");
   window.location.href = "/login.html";
 }
 
@@ -66,7 +66,6 @@ async function addCategory(name) {
 // Kategoriya tahrirlash
 async function editCategory(categoryId) {
   const newName = prompt("Enter new category name:");
-
   if (!newName) {
     alert("Category name is required.");
     return;
@@ -112,10 +111,4 @@ async function deleteCategory(categoryId) {
 }
 
 // "Add Category" tugmasiga hodisa qo'shish
-document.getElementById("addCategory").addEventListener("click", () => {
-  const name = prompt("Enter category name:");
-  if (name) addCategory(name);
-});
-
-// Kategoriyalarni yuklash
-fetchCategories();
+document.get
